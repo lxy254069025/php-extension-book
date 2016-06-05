@@ -148,5 +148,68 @@ ZEND_API int add_next_index_stringl(zval *arg, const char *str, size_t length);	
 ZEND_API int add_next_index_zval(zval *arg, zval *value);	/*  */
 ```
 
+我们知道如何向zval中添加数组，那如何遍历数组呢？php提供一系列的函数来操作数组。
+
+*1、数组遍历*
+
+ZEND_HASH_FOREACH_VAL宏函数用于遍历php中的数组,包含两个参数，第一个zend_array，第二个zval，用户存入遍历后的val值。
+
+ZEND_HASH_FOREACH_KEY_VAL_IND(ht, _h, _key, _val)第一个zend_array，第二个long，第三个zend_string，第四个zval
+
+ZEND_HASH_FOREACH_END()作为以上两函数的的结束。
+
+```c
+PHP_FUNCTION(hello) {
+    zval arr;
+    zend_long h;
+    zend_string *key;
+    zval *val;
+    
+    array_init(&arr);
+    add_assoc_long(&arr,"key",1);
+    add_index_long(&arr,1,2);
+    
+    
+    ZEND_HASH_FOREACH_KEY_VAL_IND(Z_ARRVAL(arr),h,key,val) {
+        if (key) {
+            zend_printf("%s \n",key->val); /* 如果key存在 */
+          	zend_string_release(key); /* 引用为减1为0时，释放 */
+        } else {
+            zend_printf("%d \n",h);
+        }
+        
+        php_var_dump(val,1); /* #include "ext/standard/php_var.h" */
+        zval_add_ref(val); /* 增加zval引用计数 */
+    }ZEND_HASH_FOREACH_END();
+    RETURN_ZVAL(&arr,0,1);
+}
+```
+
+*2、快速查找hash*
+
+在源码Zend/zend_hash.h中你用能找所有的关于hash的操作方法。没有研究过他，是不可能撑握php数组这块，当然其他的地方你也没法撑握。推荐必看。
+
+`ZEND_API zval* ZEND_FASTCALL zend_hash_find(const HashTable *ht, zend_string *key);`根据zend_string 字符串结构体来查找。
+
+```c
+zend_string *k = zend_string_init("key",sizeof("key")-1,0);
+zval *value = zend_hash_find(Z_ARRVAL(arr),k);
+zend_string_release(k);
+if (value) {
+  php_var_dump(value,1);
+  zval_ptr_dtor(value); /* 释放value值，引用减1为0时释放 */
+}
+```
+
+`ZEND_API zval* ZEND_FASTCALL zend_hash_index_find(const HashTable *ht, zend_ulong h);`根据数组数字素引查找。
+
+```c
+zval *value = zend_hash_index_find(Z_ARRVAL(arr),1);
+if (value) {
+  php_var_dump(value,1);
+  zval_ptr_dtor(value);/* 释放value值，引用减1为0时释放 */
+}
+```
+
 
 
