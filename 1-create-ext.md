@@ -5,15 +5,24 @@ php源码文件夹的ext目录有一个ext_skel的sh脚本，我们执行`./ext_
 打开目录后你会发现如下几个文件：
 
 ├── CREDITS //扩展描述文件，包含扩展名，开发者信息。默认生成时只带有扩展名
+
 ├── EXPERIMENTAL
+
 ├── config.m4 //UNIX 构建系统配置
+
 ├── config.w32 //Windows 构建系统配置 
+
 ├── php_test.h //包含附加的宏、原型和全局量
+
 ├── test.c //扩展源文件
+
 ├── test.php //测试文件
+
 └── tests  //测试脚本目录
 
+
 ​     └── 001.phpt //测试脚本。测试方法：php ../../run-tests.php ./tests/001.phpt。run-tests.php文件存在php源码根目录
+
 
 首先打开一个名为config.m4文件。找到如下几行代码。且将期dnl删除。
 
