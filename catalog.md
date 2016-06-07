@@ -10,11 +10,12 @@
 
 * [面向对象](2.md)
 
-  * [定义类](2-object.md)
+  * [定义类](2-create-class.md)
 
   * [类成员属性](2-object-proprty.md)
 
   * [继承与接口](2-extends-interface.md)
 
     ​
+
 
