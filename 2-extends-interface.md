@@ -68,12 +68,18 @@ void create_parent_test_class(void) {
 
 接口的定义和类定义几乎一致，注册类使用的是`zend_register_internal_class`函数，而接口使用的是`zend_register_internal_interface(zend_class_entry *orig_class_entry)`。接口在zend_function_entry部分使用的是`ZEND_ABSTRACT_ME(classname, name, arg_info)`，表示这个只需要声名，不需要实现，也就是说不需要`ZEND_METHOD`来实现，只需要使用者来实现它。
 
-在扩展中使用接口也非常方便，php内核提供了`zend_class_implements(zend_class_entry *class_entry, int num_interfaces, ...);`函数，第一个表示当前使用者的class，第二参数表示，需要使用几个接口，第三个…表示可以接收多个zend_class_entry结构。取决于第二参数的数量。相当于php代码：
+在扩展中使用接口也非常方便，php内核提供了`zend_class_implements(zend_class_entry *class_entry, int num_interfaces, ...);`函数，第一个表示当前使用者的class，第二参数表示需要使用几个接口，第三个…表示可以接收多个zend_class_entry结构。取决于第二参数的数量。相当于php代码：
 
 ```php
 class test implements interface1,interface2,interface2 {
   //...
 }
+```
+
+对应的c代码：
+
+```c
+zend_class_implements(class_entry, 3, interface_ce1,interface_ce2,interface_ce3);
 ```
 
 
